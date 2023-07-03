@@ -12,7 +12,7 @@ window.title("3D Rotation of Earth and Moon")
 # Create a canvas and place it in the window
 canvas_width = 800
 canvas_height = 800
-canvas = tk.Canvas(window, width=canvas_width, height=canvas_height, bg='#1E555C')
+canvas = tk.Canvas(window, width=canvas_width, height=canvas_height, bg='#000022')
 canvas.pack()
 
 # Perspective configuration
