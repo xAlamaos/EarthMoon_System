@@ -5,7 +5,7 @@ import numpy as np
 
 # Creating the window
 window = tk.Tk()
-window.title("3D Rotation of Earth and Moon")
+window.title("3D Representation of Earth and Moon")
 
 # Create a canvas and place it in the window
 canvas_width = 800
