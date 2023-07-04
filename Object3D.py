@@ -2,8 +2,8 @@ import random
 import time
 from obj_handler import parse_obj_file
 import numpy as np
-from operations import translate, rotate_around_object_y, scale, rotate_around_object_x, rotate_around_object_z
-from math import pi, tan
+from operations import translate, rotate_around_object_y, rotate_around_object_x, rotate_around_object_z
+from math import pi, cos, sin
 
 from utils import apply_perspective_projection
 
@@ -14,7 +14,7 @@ class Object3D:
         self.original_vertices, self.faces = parse_obj_file(obj_file_path)
         # Definir a posição inicial do objeto 3D
         self.x, self.y, self.z = position
-        # Definir os parâmetros da projeção de perspectiva
+        # Definir os parâmetros da projeção de perspetiva
         self.fov = fov
         self.aspect_ratio = aspect_ratio
         self.near = near
@@ -44,10 +44,11 @@ class Object3D:
             self.vertices = rotate_around_object_y(self.vertices, self.angle * (pi / 180))
         elif axis == 'z':
             self.vertices = rotate_around_object_z(self.vertices, self.angle * (pi / 180))
-        # Aplicar projeção de perspectiva nos vértices
+        # Aplicar projeção de perspetiva nos vértices
         self.vertices = apply_perspective_projection(self.vertices, self.fov, self.aspect_ratio, self.near, self.far)
         # Mapear vértices para as coordenadas da tela
-        screen_vertices = [(x * self.canvas_width / 2 + self.canvas_width / 2, -y * self.canvas_height / 2 + self.canvas_height / 2, z) for x, y, z in self.vertices]
+        screen_vertices = [(x * self.canvas_width / 2 + self.canvas_width / 2, -y * self.canvas_height / 2 +
+                            self.canvas_height / 2, z) for x, y, z in self.vertices]
 
         # Inicializar a lista para armazenar polígonos
         polygons = []
@@ -63,5 +64,34 @@ class Object3D:
             else:  # Caso contrário, geramos um único polígono para a face
                 vertices = [screen_vertices[i] for i in face]
                 polygons.append((vertices, fill_color))
+
+        # Translate the moon around the Earth
+        if axis == 'y':
+            self.moon_radius = 10  # Radius of the moon's orbit around the Earth
+            moon_angle = self.angle * (pi / 180)
+            moon_x = self.x + self.moon_radius * cos(moon_angle)
+            moon_y = self.y + self.moon_radius * sin(moon_angle)
+            moon_z = self.z
+            moon_position = [moon_x, moon_y, moon_z]
+            moon_vertices = translate(self.original_vertices, moon_position)
+            moon_vertices = rotate_around_object_y(moon_vertices, -self.angle * (pi / 180))
+            moon_vertices = translate(moon_vertices, [self.x, self.y, self.z])
+            moon_vertices = apply_perspective_projection(moon_vertices, self.fov,
+                                                         self.aspect_ratio, self.near, self.far)
+            moon_screen_vertices = [(x * self.canvas_width / 2 + self.canvas_width / 2, -y * self.canvas_height / 2 +
+                                     self.canvas_height / 2, z) for x, y, z in moon_vertices]
+            moon_fill_color = '#cccccc'  # Color for the moon
+
+            for face in self.faces:
+                if len(face) > 3:
+                    for i in range(1, len(face) - 1):
+                        vertices = [moon_screen_vertices[face[0]],
+                                    moon_screen_vertices[face[i]],
+                                    moon_screen_vertices[face[i + 1]]]
+                        polygons.append((vertices, moon_fill_color))
+                else:
+                    vertices = [moon_screen_vertices[i] for i in face]
+                    polygons.append((vertices, moon_fill_color))
+
         # Retorna a lista de polígonos para renderização
         return polygons

@@ -5,11 +5,13 @@ def parse_obj_file(filename):
     # Abrir o arquivo .obj para leitura
     for line in open(filename, 'r'):
         # Ignorar comentários
-        if line.startswith('#'): continue
+        if line.startswith('#'):
+            continue
         # Dividir a linha em valores separados por espaço
         values = line.split()
         # Se a linha estiver vazia, ignorá-la
-        if not values: continue
+        if not values:
+            continue
 
         # Se a linha começar com 'v', então é uma definição de vértice
         if values[0] == 'v':
@@ -22,7 +24,8 @@ def parse_obj_file(filename):
             for v in values[1:]:
                 # Os índices podem ser separados por '/', então precisamos dividir novamente
                 w = v.split('/')
-                # Subtrair 1 dos índices porque o Python indexa a partir de 0, enquanto os arquivos .obj indexam a partir de 1
+                # Subtrair 1 dos índices porque o Python indexa a partir de 0,
+                # enquanto os arquivos .obj indexam a partir de 1
                 face.append(int(w[0]) - 1)
             # Adicionar a face à lista de faces
             faces.append(face)
