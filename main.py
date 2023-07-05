@@ -24,7 +24,7 @@ EARTH_MODEL = './shapes/earth.obj'
 MOON_MODEL = './shapes/moon.obj'
 
 # Creating the Earth and Moon objects
-earth = Object3D(EARTH_MODEL, [0, 0, 15], FOV, ASPECT_RATIO, near, far, canvas_width, canvas_height, 0)
+earth = Object3D(EARTH_MODEL, [0, 0, 12], FOV, ASPECT_RATIO, near, far, canvas_width, canvas_height, 0)
 
 # Center of the screen
 center_x, center_y = canvas_width / 2, canvas_height / 2  # Screen center
@@ -65,7 +65,7 @@ def animate():
     earth_speed = 5  # Earth rotation speed
 
     # Generate the polygons for the Earth
-    polygons += earth.get_animated_polygons(-earth_speed, axis='y')
+    polygons += earth.get_animated_polygons(earth_speed, axis='y')
 
     # Sort the polygons by the average squared distance of their vertices to the center of the screen
     polygons.sort(key=lambda x: -np.mean([distance_to_center(vertex) for vertex in x[0]]))

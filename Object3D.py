@@ -24,37 +24,38 @@ class Object3D:
         # Definir a largura e altura do canvas
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
-        # Inicializar os parâmetros para a mudança de cor
-        self.last_color_change = time.time()
-        self.r = random.randint(0, 255)
-        self.g = random.randint(0, 255)
-        self.b = random.randint(0, 255)
+        # Definir a cor do objeto como azul
+        self.r, self.g, self.b = 33, 70, 94  # Blue color
+        self.moon_radius = 10
 
     def get_animated_polygons(self, step, axis='y'):
-        # Atualizar o ângulo de rotação
+        # Update the rotation angle
         self.angle += step
-        # Copiar os vértices originais para transformação
+
+        # Copy the original vertices for transformation
         self.vertices = np.copy(self.original_vertices)
-        # Mover os vértices para a posição do objeto
+
+        # Move the vertices to the object's position
         self.vertices = translate(self.vertices, [self.x, self.y, self.z])
-        # Aplicar rotações em torno dos eixos
+
+        # Apply rotations around the axes
         if axis == 'x':
             self.vertices = rotate_around_object_x(self.vertices, self.angle * (pi / 180))
         elif axis == 'y':
             self.vertices = rotate_around_object_y(self.vertices, self.angle * (pi / 180))
         elif axis == 'z':
             self.vertices = rotate_around_object_z(self.vertices, self.angle * (pi / 180))
-        # Aplicar projeção de perspetiva nos vértices
+
+        # Apply perspective projection to the vertices
         self.vertices = apply_perspective_projection(self.vertices, self.fov, self.aspect_ratio, self.near, self.far)
-        # Mapear vértices para as coordenadas da tela
+
+        # Map vertices to screen coordinates
         screen_vertices = [(x * self.canvas_width / 2 + self.canvas_width / 2, -y * self.canvas_height / 2 +
                             self.canvas_height / 2, z) for x, y, z in self.vertices]
 
-        # Inicializar a lista para armazenar polígonos
+        # Initialize the list to store polygons
         polygons = []
-        # Converter as cores RGB para o formato hexadecimal
         fill_color = '#%02x%02x%02x' % (self.r, self.g, self.b)
-
         # Para cada face, gerar os polígonos correspondentes
         for face in self.faces:
             if len(face) > 3:  # Se a face tem mais de 3 vértices, geramos múltiplos triângulos
@@ -65,33 +66,43 @@ class Object3D:
                 vertices = [screen_vertices[i] for i in face]
                 polygons.append((vertices, fill_color))
 
-        # Translate the moon around the Earth
-        if axis == 'y':
-            self.moon_radius = 10  # Radius of the moon's orbit around the Earth
-            moon_angle = self.angle * (pi / 180)
+        # Calculate moon's position and angle based on the orbit axis
+
+        moon_angle = self.angle * (pi / 180)
+        if axis == 'x':
+            moon_x = self.x
+            moon_y = self.y + self.moon_radius * cos(moon_angle)
+            moon_z = self.z + self.moon_radius * sin(moon_angle)
+        elif axis == 'y':
+            moon_x = self.x + self.moon_radius * cos(moon_angle)
+            moon_y = self.y
+            moon_z = self.z + self.moon_radius * sin(moon_angle)
+        elif axis == 'z':
             moon_x = self.x + self.moon_radius * cos(moon_angle)
             moon_y = self.y + self.moon_radius * sin(moon_angle)
             moon_z = self.z
-            moon_position = [moon_x, moon_y, moon_z]
-            moon_vertices = translate(self.original_vertices, moon_position)
-            moon_vertices = rotate_around_object_y(moon_vertices, -self.angle * (pi / 180))
-            moon_vertices = translate(moon_vertices, [self.x, self.y, self.z])
-            moon_vertices = apply_perspective_projection(moon_vertices, self.fov,
-                                                         self.aspect_ratio, self.near, self.far)
-            moon_screen_vertices = [(x * self.canvas_width / 2 + self.canvas_width / 2, -y * self.canvas_height / 2 +
-                                     self.canvas_height / 2, z) for x, y, z in moon_vertices]
-            moon_fill_color = '#cccccc'  # Color for the moon
 
-            for face in self.faces:
-                if len(face) > 3:
-                    for i in range(1, len(face) - 1):
-                        vertices = [moon_screen_vertices[face[0]],
-                                    moon_screen_vertices[face[i]],
-                                    moon_screen_vertices[face[i + 1]]]
-                        polygons.append((vertices, moon_fill_color))
-                else:
-                    vertices = [moon_screen_vertices[i] for i in face]
-                    polygons.append((vertices, moon_fill_color))
+        moon_position = [moon_x, moon_y, moon_z]
 
-        # Retorna a lista de polígonos para renderização
+        # Translate, rotate, and project the moon vertices
+        moon_vertices = translate(self.original_vertices, moon_position)
+        moon_vertices = rotate_around_object_y(moon_vertices, -self.angle * (pi / 180))
+        moon_vertices = translate(moon_vertices, [self.x, self.y, self.z])
+        moon_vertices = apply_perspective_projection(moon_vertices, self.fov, self.aspect_ratio, self.near, self.far)
+        moon_screen_vertices = [(x * self.canvas_width / 2 + self.canvas_width / 2, -y * self.canvas_height / 2 +
+                                 self.canvas_height / 2, z) for x, y, z in moon_vertices]
+
+        # Define the fill color for the moon
+        moon_fill_color = '#cccccc'  # Color for the moon
+
+        # Generate polygons for the moon
+        for face in self.faces:
+            if len(face) > 3:
+                for i in range(1, len(face) - 1):
+                    polygon = [moon_screen_vertices[face[0]],
+                               moon_screen_vertices[face[i]],
+                               moon_screen_vertices[face[i + 1]]]
+                    polygons.append((polygon, moon_fill_color))
+
+        # Return the polygons for both the Earth and the Moon
         return polygons
