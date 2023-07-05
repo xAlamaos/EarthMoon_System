@@ -56,32 +56,21 @@ class Object3D:
         # Initialize the list to store polygons
         polygons = []
         fill_color = '#%02x%02x%02x' % (self.r, self.g, self.b)
-        # Para cada face, gerar os polígonos correspondentes
+        # For each face, generate the corresponding polygons
         for face in self.faces:
-            if len(face) > 3:  # Se a face tem mais de 3 vértices, geramos múltiplos triângulos
+            if len(face) > 3:  # If the face has more than 3 vertices, generate multiple triangles
                 for i in range(1, len(face) - 1):
                     vertices = [screen_vertices[face[0]], screen_vertices[face[i]], screen_vertices[face[i + 1]]]
                     polygons.append((vertices, fill_color))
-            else:  # Caso contrário, geramos um único polígono para a face
+            else:  # Otherwise, generate a single polygon for the face
                 vertices = [screen_vertices[i] for i in face]
                 polygons.append((vertices, fill_color))
 
         # Calculate moon's position and angle based on the orbit axis
-
-        moon_angle = self.angle * (pi / 180)
-        if axis == 'x':
-            moon_x = self.x
-            moon_y = self.y + self.moon_radius * cos(moon_angle)
-            moon_z = self.z + self.moon_radius * sin(moon_angle)
-        elif axis == 'y':
-            moon_x = self.x + self.moon_radius * cos(moon_angle)
-            moon_y = self.y
-            moon_z = self.z + self.moon_radius * sin(moon_angle)
-        elif axis == 'z':
-            moon_x = self.x + self.moon_radius * cos(moon_angle)
-            moon_y = self.y + self.moon_radius * sin(moon_angle)
-            moon_z = self.z
-
+        moon_angle = -self.angle * (pi / 180)  # Invert the sign of the moon's angle
+        moon_x = self.x + self.moon_radius * cos(moon_angle)
+        moon_y = self.y
+        moon_z = self.z + self.moon_radius * sin(moon_angle)
         moon_position = [moon_x, moon_y, moon_z]
 
         # Translate, rotate, and project the moon vertices
@@ -89,7 +78,9 @@ class Object3D:
         moon_vertices = rotate_around_object_y(moon_vertices, -self.angle * (pi / 180))
         moon_vertices = translate(moon_vertices, [self.x, self.y, self.z])
         moon_vertices = apply_perspective_projection(moon_vertices, self.fov, self.aspect_ratio, self.near, self.far)
-        moon_screen_vertices = [(x * self.canvas_width / 2 + self.canvas_width / 2, -y * self.canvas_height / 2 +
+
+        # Map moon vertices to screen coordinates
+        screen_moon_vertices = [(x * self.canvas_width / 2 + self.canvas_width / 2, -y * self.canvas_height / 2 +
                                  self.canvas_height / 2, z) for x, y, z in moon_vertices]
 
         # Define the fill color for the moon
@@ -99,10 +90,13 @@ class Object3D:
         for face in self.faces:
             if len(face) > 3:
                 for i in range(1, len(face) - 1):
-                    polygon = [moon_screen_vertices[face[0]],
-                               moon_screen_vertices[face[i]],
-                               moon_screen_vertices[face[i + 1]]]
+                    polygon = [screen_moon_vertices[face[0]],
+                               screen_moon_vertices[face[i]],
+                               screen_moon_vertices[face[i + 1]]]
                     polygons.append((polygon, moon_fill_color))
+            else:
+                vertices = [screen_moon_vertices[i] for i in face]
+                polygons.append((vertices, moon_fill_color))
 
         # Return the polygons for both the Earth and the Moon
         return polygons
