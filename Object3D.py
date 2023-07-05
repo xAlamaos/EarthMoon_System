@@ -1,5 +1,3 @@
-import random
-import time
 from obj_handler import parse_obj_file
 import numpy as np
 from operations import translate, rotate_around_object_y, rotate_around_object_x, rotate_around_object_z

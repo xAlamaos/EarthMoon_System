@@ -34,7 +34,8 @@ center_x, center_y = canvas_width / 2, canvas_height / 2  # Screen center
 fps = 60
 interval = int(1000 / fps)  # Interval between frames in milliseconds
 # Animation duration
-duration = 3  # Duration in seconds
+duration = 30  # Duration in seconds
+
 
 # Function to calculate the distance to the center
 def distance_to_center(vertex):
@@ -42,11 +43,12 @@ def distance_to_center(vertex):
     dy = center_y - vertex[1]
     return dx * dx + dy * dy
 
+
 # Function to render polygons
-def render_polygons(polygons, canvas, near, far):
+def render_polygons(polygons, canvas_c, near_c, far_c):
     for vertices, color in polygons:
         # Clipping against the near and far planes
-        if all((near <= vertex[2] <= far) for vertex in vertices):
+        if all((near_c <= vertex[2] <= far_c) for vertex in vertices):
             # Calculating the face normal vector
             u = np.array([vertices[1][0] - vertices[0][0], vertices[1][1] -
                           vertices[0][1], vertices[1][2] - vertices[0][2]])
@@ -58,7 +60,7 @@ def render_polygons(polygons, canvas, near, far):
             if normal[2] > 0:
                 # Drawing the lines of the face
                 polygon_coords = [coord for vertex in vertices for coord in vertex[:2]]
-                canvas.create_polygon(polygon_coords, fill=color, outline='black')
+                canvas_c.create_polygon(polygon_coords, fill=color, outline='black')
 
 
 # Function to animate the Earth and Moon rotation
