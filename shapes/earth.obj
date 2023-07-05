@@ -1,7 +1,4 @@
-# Blender v2.79 (sub 0) OBJ File: 'Earth 2K.blend'
-# www.blender.org
-mtllib Earth 2K.mtl
-o Earth_Cube.002
+# Representação do Planeta Terra como polígono
 v -0.172738 3.165391 0.157983
 v -0.238083 3.128375 -0.480715
 v -0.292668 2.967402 -1.087829
