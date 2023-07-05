@@ -36,15 +36,15 @@ center_x, center_y = canvas_width / 2, canvas_height / 2
 fps = 60
 interval = int(1000 / fps)  # Intervalo entre quadros em milissegundos
 # Duração da Animação
-duration = 30  # Tempo em segundos (60 = 1min)
+duration = 30  # Tempo em segundos (60 = 1 min)
 
 
 # Função para calcular a distância até ao centro
 def distance_to_center(vertex):
     """
-
-    :param vertex:
-    :return:
+    Calcula a distância de um vértice até o centro do canvas
+    :param vertex: Lista com as coordenadas x, y e z do vértice
+    :return: Distância do vértice ao centro do canvas
     """
     dx = center_x - vertex[0]
     dy = center_y - vertex[1]
@@ -54,12 +54,11 @@ def distance_to_center(vertex):
 # Função para renderizar polígonos
 def render_polygons(polygons, canvas_c, near_c, far_c):
     """
-
-    :param polygons:
-    :param canvas_c:
-    :param near_c:
-    :param far_c:
-    :return:
+    Renderiza os polígonos na tela
+    :param polygons: Lista de polígonos a serem renderizados, cada um contendo uma lista de vértices e a cor do polígono
+    :param canvas_c: Objeto de canvas do Tkinte
+    :param near_c: Distância do plano de recorte próximo
+    :param far_c: Distância do plano de recorte distante
     """
     for vertices, color in polygons:
         # Cortando contra os planos próximos e distantes
@@ -81,9 +80,8 @@ def render_polygons(polygons, canvas_c, near_c, far_c):
 # Função para animar a rotação da Terra e da Lua
 def animate(start_time):
     """
-
-    :param start_time:
-    :return:
+    Função de animação para girar a Terra e a Lua
+    :param start_time: Tempo de início da animação
     """
     # Cálculo do tempo decorrido após o início da animação
     elapsed_time = time.time() - start_time
@@ -93,7 +91,7 @@ def animate(start_time):
         window.destroy()  # Fecha a animação por completo quando o tempo final é atingido
         return
 
-    # Limpe ao ecrã no início de cada atualização de 'frame'
+    # Limpa o ecrã no início de cada atualização de 'frame'
     canvas.delete("all")
     polygons = []
 
@@ -116,18 +114,18 @@ def animate(start_time):
 # Function to start the animation
 def start_animation():
     """
-
+    Função para iniciar a animação
     :return:
     """
-    # Record the start time
+    # Registra o tempo de início
     start_time = time.time()
 
-    # Start the animation
+    # Inicia a animação
     animate(start_time)
 
 
-# Start the animation
+# Inicia a animação
 start_animation()
 
-# Start the main window loop
+# Inicia o loop principal da janela
 window.mainloop()
