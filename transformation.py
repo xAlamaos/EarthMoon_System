@@ -3,6 +3,11 @@ from math import cos, sin, tan
 
 
 def translation(v):
+    """
+
+    :param v:
+    :return:
+    """
     # Esta função cria uma matriz de translação com base num vetor de translação v.
     # 'v' é uma lista ou array de valores representando a translação em cada dimensão.
     size = len(v)
@@ -12,6 +17,11 @@ def translation(v):
 
 
 def dilation(v):
+    """
+
+    :param v:
+    :return:
+    """
     # Esta função cria uma matriz de dilatação com base num vetor de dilatação v.
     # 'v' é uma lista ou array de valores representando a dilatação em cada dimensão.
     size = len(v)
@@ -21,6 +31,11 @@ def dilation(v):
 
 
 def rotation_x(angle):
+    """
+
+    :param angle:
+    :return:
+    """
     # Esta função cria uma matriz de rotação em torno do eixo X com base num ângulo fornecido.
     # 'angle' é o ângulo de rotação em graus.
     angle = np.radians(angle)
@@ -32,6 +47,11 @@ def rotation_x(angle):
 
 
 def rotation_y(angle):
+    """
+
+    :param angle:
+    :return:
+    """
     # Esta função cria uma matriz de rotação em torno do eixo Y com base num ângulo fornecido.
     # 'angle' é o ângulo de rotação em graus.
     return np.array([[cos(angle), 0, sin(angle), 0],
@@ -41,6 +61,11 @@ def rotation_y(angle):
 
 
 def rotation_z(angle):
+    """
+
+    :param angle:
+    :return:
+    """
     # Esta função cria uma matriz de rotação em torno do eixo Z com base num ângulo fornecido.
     # 'angle' é o ângulo de rotação em graus.
     angle = np.radians(angle)
@@ -52,6 +77,15 @@ def rotation_z(angle):
 
 
 def apply_perspective_projection(rotated_vertices, fov, aspect_ratio, near, far):
+    """
+
+    :param rotated_vertices:
+    :param fov:
+    :param aspect_ratio:
+    :param near:
+    :param far:
+    :return:
+    """
     # Esta função aplica a projeção perspetiva a vértices rotacionados.
     # 'rotated_vertices' são os vértices após as transformações de rotação.
     # 'fov' é o campo de visão em radianos.

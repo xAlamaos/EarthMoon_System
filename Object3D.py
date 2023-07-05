@@ -7,6 +7,18 @@ from transformation import apply_perspective_projection
 
 class Object3D:
     def __init__(self, obj_file_path, position, fov, aspect_ratio, near, far, canvas_width, canvas_height, start_angle):
+        """
+
+        :param obj_file_path:
+        :param position:
+        :param fov:
+        :param aspect_ratio:
+        :param near:
+        :param far:
+        :param canvas_width:
+        :param canvas_height:
+        :param start_angle:
+        """
         # Carregar vértices e faces do arquivo .obj
         self.original_vertices, self.faces = parse_obj_file(obj_file_path)
         # Definir a posição inicial do objeto 3D
@@ -26,6 +38,12 @@ class Object3D:
         self.moon_radius = 10
 
     def get_animated_polygons(self, step, axis='y'):
+        """
+
+        :param step:
+        :param axis:
+        :return:
+        """
         # Update the rotation angle
         self.angle += step
 

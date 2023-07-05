@@ -1,4 +1,9 @@
 def parse_obj_file(filename):
+    """
+
+    :param filename:
+    :return:
+    """
     vertices = []  # Inicializar a lista para armazenar os vértices
     faces = []  # Inicializar a lista para armazenar as faces
 
