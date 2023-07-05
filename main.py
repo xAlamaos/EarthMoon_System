@@ -2,6 +2,7 @@ import tkinter as tk
 from Object3D import Object3D
 from math import pi
 import numpy as np
+import time
 
 # Creating the window
 window = tk.Tk()
@@ -32,6 +33,8 @@ center_x, center_y = canvas_width / 2, canvas_height / 2  # Screen center
 # Frames per second
 fps = 60
 interval = int(1000 / fps)  # Interval between frames in milliseconds
+# Animation duration
+duration = 3  # Duration in seconds
 
 # Function to calculate the distance to the center
 def distance_to_center(vertex):
@@ -57,8 +60,17 @@ def render_polygons(polygons, canvas, near, far):
                 polygon_coords = [coord for vertex in vertices for coord in vertex[:2]]
                 canvas.create_polygon(polygon_coords, fill=color, outline='black')
 
+
 # Function to animate the Earth and Moon rotation
-def animate():
+def animate(start_time):
+    # Calculate the elapsed time since the animation started
+    elapsed_time = time.time() - start_time
+
+    # Check if the animation duration has been reached
+    if elapsed_time >= duration:
+        window.destroy()
+        return
+
     # Clear the canvas at the beginning of each frame
     canvas.delete("all")
     polygons = []
@@ -76,10 +88,20 @@ def animate():
         render_polygons([polygon], canvas, near, far)
 
     # Call the animate function again after a pause
-    canvas.after(interval, animate)
+    canvas.after(interval, animate, start_time)
+
+
+# Function to start the animation
+def start_animation():
+    # Record the start time
+    start_time = time.time()
+
+    # Start the animation
+    animate(start_time)
+
 
 # Start the animation
-animate()
+start_animation()
 
 # Start the main window loop
 window.mainloop()
