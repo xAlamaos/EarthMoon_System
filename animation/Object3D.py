@@ -37,6 +37,8 @@ class Object3D:
         # Definir a cor do objeto como azul
         self.r, self.g, self.b = 33, 70, 94  # Cor planeta Terra
         self.moon_radius = 10  # Radio de translação da Lua com base na Terra
+        # Inicializar os vértices com uma cópia dos vértices originais
+        self.vertices = np.copy(self.original_vertices)
 
     def get_animated_polygons(self, step, axis='y'):
         """
