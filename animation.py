@@ -1,43 +1,45 @@
+# Seção de Importações
 import tkinter as tk
 from Object3D import Object3D
 from math import pi
 import numpy as np
 import time
 
-# Creating the window
+
+# Criação da janela e o seu nome
 window = tk.Tk()
 window.title("3D Representation of Earth and Moon")
 
-# Create a canvas and place it in the window
+# Criar o 'canvas' e meter-la na janela
 canvas_width = 800
 canvas_height = 800
 canvas = tk.Canvas(window, width=canvas_width, height=canvas_height, bg='#000022')
 canvas.pack()
 
-# Perspective configuration
+# Configuração de Perspetiva
 FOV = pi / 3
 ASPECT_RATIO = canvas_width / canvas_height
 near = 0.1
 far = 1000
 
-# Loading the Earth and Moon models
+# Carregar os modelos da Terra e Lua
 EARTH_MODEL = './shapes/earth.obj'
 MOON_MODEL = './shapes/moon.obj'
 
-# Creating the Earth and Moon objects
+# Criação do Objeto Terra
 earth = Object3D(EARTH_MODEL, [0, 0, 12], FOV, ASPECT_RATIO, near, far, canvas_width, canvas_height, 0)
 
-# Center of the screen
-center_x, center_y = canvas_width / 2, canvas_height / 2  # Screen center
+# Centro do Ecrã
+center_x, center_y = canvas_width / 2, canvas_height / 2
 
-# Frames per second
+# Quadros por segundo
 fps = 60
-interval = int(1000 / fps)  # Interval between frames in milliseconds
-# Animation duration
-duration = 30  # Duration in seconds
+interval = int(1000 / fps)  # Intervalo entre quadros em milissegundos
+# Duração da Animação
+duration = 30  # Tempo em segundos (60 = 1min)
 
 
-# Function to calculate the distance to the center
+# Função para calcular a distância até ao centro
 def distance_to_center(vertex):
     """
 
@@ -49,7 +51,7 @@ def distance_to_center(vertex):
     return dx * dx + dy * dy
 
 
-# Function to render polygons
+# Função para renderizar polígonos
 def render_polygons(polygons, canvas_c, near_c, far_c):
     """
 
@@ -60,54 +62,54 @@ def render_polygons(polygons, canvas_c, near_c, far_c):
     :return:
     """
     for vertices, color in polygons:
-        # Clipping against the near and far planes
+        # Cortando contra os planos próximos e distantes
         if all((near_c <= vertex[2] <= far_c) for vertex in vertices):
-            # Calculating the face normal vector
+            # Cálculo do vetor normal da face
             u = np.array([vertices[1][0] - vertices[0][0], vertices[1][1] -
                           vertices[0][1], vertices[1][2] - vertices[0][2]])
             v = np.array([vertices[2][0] - vertices[0][0], vertices[2][1] -
                           vertices[0][1], vertices[2][2] - vertices[0][2]])
             normal = np.cross(u, v)
 
-            # Checking if the face is facing backwards
+            # Verificação se a face está voltada para trás
             if normal[2] > 0:
-                # Drawing the lines of the face
+                # Desenhar as linhas da face
                 polygon_coords = [coord for vertex in vertices for coord in vertex[:2]]
                 canvas_c.create_polygon(polygon_coords, fill=color, outline='black')
 
 
-# Function to animate the Earth and Moon rotation
+# Função para animar a rotação da Terra e da Lua
 def animate(start_time):
     """
 
     :param start_time:
     :return:
     """
-    # Calculate the elapsed time since the animation started
+    # Cálculo do tempo decorrido após o início da animação
     elapsed_time = time.time() - start_time
 
-    # Check if the animation duration has been reached
+    # Verifica se a duração da animação foi atingida
     if elapsed_time >= duration:
-        window.destroy()
+        window.destroy()  # Fecha a animação por completo quando o tempo final é atingido
         return
 
-    # Clear the canvas at the beginning of each frame
+    # Limpe ao ecrã no início de cada atualização de 'frame'
     canvas.delete("all")
     polygons = []
 
-    earth_speed = 5  # Earth rotation speed
+    earth_speed = 5  # Velocidade da Rotação da Terra
 
-    # Generate the polygons for the Earth
+    # Criação de polígonos para a Terra
     polygons += earth.get_animated_polygons(earth_speed, axis='y')
 
-    # Sort the polygons by the average squared distance of their vertices to the center of the screen
+    # Organiza os polígonos pela distância média ao quadrado dos seus vértices até o centro do ecrã
     polygons.sort(key=lambda x: -np.mean([distance_to_center(vertex) for vertex in x[0]]))
 
-    # Render the polygons
+    # Renderiza os polígonos
     for polygon in polygons:
         render_polygons([polygon], canvas, near, far)
 
-    # Call the animate function again after a pause
+    # Chama a função 'animate' novamente após uma pausa
     canvas.after(interval, animate, start_time)
 
 

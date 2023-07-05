@@ -74,3 +74,5 @@ def translate(vertices, translation_vector):
     translated_vertices = [np.dot(translation_matrix, vertex) for vertex in homogeneous_vertices]
     translated_vertices = [list(vertex[:3]) for vertex in translated_vertices]  # Volta para coordenadas não homogêneas
     return translated_vertices
+
+
