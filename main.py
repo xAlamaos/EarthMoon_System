@@ -29,13 +29,15 @@ earth = Object3D(EARTH_MODEL, [0, 0, 12], FOV, ASPECT_RATIO, near, far, canvas_w
 # Center of the screen
 center_x, center_y = canvas_width / 2, canvas_height / 2  # Screen center
 
+# Frames per second
+fps = 60
+interval = int(1000 / fps)  # Interval between frames in milliseconds
 
 # Function to calculate the distance to the center
 def distance_to_center(vertex):
     dx = center_x - vertex[0]
     dy = center_y - vertex[1]
     return dx * dx + dy * dy
-
 
 # Function to render polygons
 def render_polygons(polygons, canvas, near, far):
@@ -54,7 +56,6 @@ def render_polygons(polygons, canvas, near, far):
                 # Drawing the lines of the face
                 polygon_coords = [coord for vertex in vertices for coord in vertex[:2]]
                 canvas.create_polygon(polygon_coords, fill=color, outline='black')
-
 
 # Function to animate the Earth and Moon rotation
 def animate():
@@ -75,8 +76,7 @@ def animate():
         render_polygons([polygon], canvas, near, far)
 
     # Call the animate function again after a pause
-    canvas.after(int(1000 / 60), animate)
-
+    canvas.after(interval, animate)
 
 # Start the animation
 animate()
