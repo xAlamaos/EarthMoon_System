@@ -2,8 +2,7 @@ from obj_handler import parse_obj_file
 import numpy as np
 from operations import translate, rotate_around_object_y, rotate_around_object_x, rotate_around_object_z
 from math import pi, cos, sin
-
-from utils import apply_perspective_projection
+from transformation import apply_perspective_projection
 
 
 class Object3D:
