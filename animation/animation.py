@@ -97,7 +97,7 @@ def animate(start_time):
     canvas.delete("all")
     polygons = []
 
-    earth_speed = 5  # Velocidade da Rotação da Terra
+    earth_speed = 10  # Velocidade da Rotação da Terra
 
     # Criação de polígonos para a Terra
     polygons += earth.get_animated_polygons(earth_speed, axis='y')
